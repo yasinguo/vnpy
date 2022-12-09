@@ -47,6 +47,7 @@ class Product(Enum):
     INDEX = "指数"
     FOREX = "外汇"
     SPOT = "现货"
+    MARGIN = "币币杠杆"
     ETF = "ETF"
     BOND = "债券"
     WARRANT = "权证"
@@ -126,6 +127,9 @@ class Exchange(Enum):
     KRX = "KRX"             # Korean Exchange
     OTC = "OTC"             # OTC Product (Forex/CFD/Pink Sheet Equity)
     IBKRATS = "IBKRATS"     # Paper Trading Exchange of IB
+
+    #OKEX
+    OKEX = "OKEX"
 
     # Special Function
     LOCAL = "LOCAL"         # For local generated data

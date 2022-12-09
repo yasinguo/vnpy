@@ -13,6 +13,7 @@ from math import floor, ceil
 
 import numpy as np
 import talib
+import pandas as pd
 
 from .object import BarData, TickData
 from .constant import Exchange, Interval
@@ -25,6 +26,24 @@ else:
 
 log_formatter: logging.Formatter = logging.Formatter('[%(asctime)s] %(message)s')
 
+def aicoin_macd(price, fastperiod=12, slowperiod=26, signalperiod=9):
+    """price = pd.DataFrame(price)
+    ewma12 = price.ewm(span=fastperiod).mean()
+    ewma60 = price.ewm(span=slowperiod).mean()
+    dif = ewma12 - ewma60
+    dif = pd.DataFrame(dif)
+    dea = dif.ewm(span=signalperiod).mean()
+    bar = (dif-dea) * 2
+    #aicoin的bar = (dif-dea)*2，talib中MACD的计算是bar = (dif-dea)*1"""
+
+    #参考https://github.com/mrjbq7/ta-lib/issues/65
+    c = price
+    fast_ema = talib.EMA(c, 12)
+    slow_ema = talib.EMA(c, 26)
+    dif = fast_ema - slow_ema
+    dea = talib.EMA(dif, 9)
+    bar = (dif - dea) * 2
+    return dif, dea, bar
 
 def extract_vt_symbol(vt_symbol: str) -> Tuple[str, Exchange]:
     """
@@ -727,7 +746,7 @@ class ArrayManager(object):
         """
         MACD.
         """
-        macd, signal, hist = talib.MACD(
+        macd, signal, hist = aicoin_macd(
             self.close, fast_period, slow_period, signal_period
         )
         if array:
